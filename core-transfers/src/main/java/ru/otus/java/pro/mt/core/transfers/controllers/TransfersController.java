@@ -75,7 +75,14 @@ public class TransfersController {
     }
 
     @PostMapping
-    @Operation(summary = "Запрос на исполнение перевода")
+    @Operation(
+            summary = "Запрос на исполнение перевода",
+            responses = {
+                    @ApiResponse(
+                            description = "Перевод исполнен", responseCode = "200"
+                    )
+            }
+    )
     public void executeTransfer(
             @Parameter(description = "Идентификатор клиента", required = true, schema = @Schema(type = "string", maxLength = 10, example = "1234567890"))
             @RequestHeader(name = "client-id") String clientId,
