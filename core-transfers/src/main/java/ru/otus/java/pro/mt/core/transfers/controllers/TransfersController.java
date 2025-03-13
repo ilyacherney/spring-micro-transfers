@@ -14,6 +14,7 @@ import ru.otus.java.pro.mt.core.transfers.dtos.TransfersPageDto;
 import ru.otus.java.pro.mt.core.transfers.entities.Transfer;
 import ru.otus.java.pro.mt.core.transfers.exceptions_handling.ErrorDto;
 import ru.otus.java.pro.mt.core.transfers.exceptions_handling.ResourceNotFoundException;
+import ru.otus.java.pro.mt.core.transfers.metrics.TransfersMetricsService;
 import ru.otus.java.pro.mt.core.transfers.services.TransfersService;
 
 import java.util.function.Function;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 @Tag(name = "Переводы", description = "Методы работы с переводами")
 public class TransfersController {
     private final TransfersService transfersService;
+    private final TransfersMetricsService transfersMetricsService;
 
     private static final Function<Transfer, TransferDto> ENTITY_TO_DTO = t -> new TransferDto(t.getId(), t.getClientId(), t.getTargetClientId(), t.getSourceAccount(), t.getTargetAccount(), t.getMessage(), t.getAmount());
 
@@ -84,6 +86,7 @@ public class TransfersController {
             @Parameter(description = "Данные для выполнения перевода", required = true)
             @RequestBody ExecuteTransferDtoRq executeTransferDtoRq
     ) {
+        transfersMetricsService.incrementMetricCounter();
         transfersService.execute(clientId, executeTransferDtoRq);
     }
 }
