@@ -4,27 +4,39 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 public class TransfersMetricsService {
-    private final Counter metricCounter;
-    private final AtomicInteger metricGauge;
+    private final Counter requestsCounter;
+    private final Counter successfulCounter;
+    private final Counter failedCounter;
 
     public TransfersMetricsService(MeterRegistry meterRegistry) {
-        metricCounter = Counter.builder("transfers")
+        requestsCounter = Counter.builder("transfers")
                 .description("Metrics for the transfers")
                 .tags("environment", "development")
                 .register(meterRegistry);
 
-        metricGauge = meterRegistry.gauge("custom_gauge", new AtomicInteger(0));
+        successfulCounter = Counter.builder("successful-transfers")
+                .description("Metrics for the transfers")
+                .tags("environment", "development")
+                .register(meterRegistry);
+
+        failedCounter = Counter.builder("failed-transfers")
+                .description("Metrics for the transfers")
+                .tags("environment", "development")
+                .register(meterRegistry);
     }
 
-    public void incrementMetricCounter() {
-        metricCounter.increment();
+    public void incrementRequestsCounter() {
+        requestsCounter.increment();
     }
 
-    public void changeCustomGauge() {
-        metricGauge.set((int)(Math.random() * 1000));
+    public void incrementSuccessfulCounter() {
+        successfulCounter.increment();
+    }
+
+    public void incrementFailedCounter() {
+        failedCounter.increment();
     }
 }

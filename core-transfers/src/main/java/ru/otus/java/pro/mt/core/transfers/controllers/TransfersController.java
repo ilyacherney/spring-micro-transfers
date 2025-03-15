@@ -86,7 +86,7 @@ public class TransfersController {
             @Parameter(description = "Данные для выполнения перевода", required = true)
             @RequestBody ExecuteTransferDtoRq executeTransferDtoRq
     ) {
-        transfersMetricsService.incrementMetricCounter();
+        transfersMetricsService.incrementRequestsCounter();
         transfersService.execute(clientId, executeTransferDtoRq);
     }
 }
