@@ -7,6 +7,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.java.pro.mt.core.transfers.dtos.ExecuteTransferDtoRq;
 import ru.otus.java.pro.mt.core.transfers.dtos.TransferDto;
@@ -42,13 +45,26 @@ public class TransfersController {
     )
     public TransfersPageDto getAllTransfers(
             @Parameter(description = "Идентификатор клиента", required = true, schema = @Schema(type = "string", maxLength = 10, example = "1234567890"))
-            @RequestHeader(name = "client-id") String clientId
+            @RequestHeader(name = "client-id") String clientId,
+            @Parameter(description = "Номер страницы (начиная с 1)", schema = @Schema(defaultValue = "1", minimum = "1"))
+            @RequestParam(name = "page", defaultValue = "1") int page,
+
+            @Parameter(description = "Размер страницы (максимум 1000)", schema = @Schema(defaultValue = "20", minimum = "1", maximum = "1000"))
+            @RequestParam(name = "size", defaultValue = "20") int size
     ) {
+        // Валидация параметров
+        page = Math.max(page, 1);
+        size = Math.min(Math.max(size, 1), 1000);
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Transfer> transfersPage = transfersService.getAllTransfers(clientId, pageable);
+
         return new TransfersPageDto(
-                transfersService
-                        .getAllTransfers(clientId)
-                        .stream()
-                        .map(ENTITY_TO_DTO).collect(Collectors.toList())
+                transfersPage.getContent().stream().map(ENTITY_TO_DTO).toList(),
+                transfersPage.getTotalPages(),
+                transfersPage.getTotalElements(),
+                page,
+                transfersPage.getSize()
         );
     }
 

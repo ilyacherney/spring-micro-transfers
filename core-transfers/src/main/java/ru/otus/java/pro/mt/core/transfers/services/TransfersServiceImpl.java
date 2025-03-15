@@ -1,6 +1,8 @@
 package ru.otus.java.pro.mt.core.transfers.services;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.otus.java.pro.mt.core.transfers.configs.properties.TransfersProperties;
 import ru.otus.java.pro.mt.core.transfers.dtos.ExecuteTransferDtoRq;
@@ -31,8 +33,8 @@ public class TransfersServiceImpl implements TransfersService {
     }
 
     @Override
-    public List<Transfer> getAllTransfers(String clientId) {
-        return transfersRepository.findAllByClientId(clientId);
+    public Page<Transfer> getAllTransfers(String clientId, Pageable pageable) {
+        return transfersRepository.findAllByClientId(clientId, pageable);
     }
 
     @Override
