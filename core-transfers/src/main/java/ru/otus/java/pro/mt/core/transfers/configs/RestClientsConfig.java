@@ -23,8 +23,8 @@ public class RestClientsConfig {
 
         RestClientProperties restClientProperties = new RestClientProperties();
         restClientProperties.setUrl(properties.getUrl());
-        restClientProperties.setConnectTimeout(300);
-        restClientProperties.setReadTimeout(250);
+        restClientProperties.setConnectTimeout((int) properties.getConnectTimeout().toMillis());
+        restClientProperties.setReadTimeout((int) properties.getReadTimeout().toMillis());
 
         return RestClientFactory.createRestClient(restClientProperties);
     }
