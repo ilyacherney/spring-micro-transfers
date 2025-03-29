@@ -13,4 +13,5 @@ public class LimitsIntegrationProperties {
     private String url;
     private Duration readTimeout;
     private Duration writeTimeout;
+    private Duration connectTimeout;
 }
